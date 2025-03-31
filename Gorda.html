@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Peso</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+        .container {
+            max-width: 500px;
+            width: 100%;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            border-radius: 10px;
+            text-align: center;
+        }
+        input, button {
+            padding: 10px;
+            margin: 10px;
+            font-size: 16px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #imagen {
+            width: 200px;
+            height: 200px;
+            margin: 20px auto;
+            display: block;
+        }
+        .rotacion {
+            animation: rotar 2s linear infinite;
+        }
+        @keyframes rotar {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        #status {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Calculadora de Peso</h1>
+        <div>
+            <label for="peso">Ingrese su peso en kg:</label>
+            <input type="number" id="peso" min="1" max="300" step="0.1">
+        </div>
+        <button onclick="verificarPeso()">Verificar peso</button>
+        <div id="status"></div>
+        <img id="imagen" src="" style="display: none;">
+        <audio id="sonido" loop></audio>
+    </div>
+
+    <script>
+        let audio = document.getElementById('sonido');
+        let imagen = document.getElementById('imagen');
+        let status = document.getElementById('status');
+
+        function verificarPeso() {
+            // Detener cualquier música previa
+            audio.pause();
+            audio.currentTime = 0;
+            
+            // Remover animación previa
+            imagen.classList.remove('rotacion');
+            
+            const peso = parseFloat(document.getElementById('peso').value);
+            if (isNaN(peso)) {
+                status.textContent = "Ingrese un número válido";
+                imagen.style.display = "none";
+                return;
+            }
+
+            status.textContent = `Peso: ${peso} kg`;
+            imagen.style.display = "block";
+
+            if (peso > 80) {
+                imagen.src = "GORDA.jpg";
+                imagen.classList.add('rotacion');
+                audio.src = "gorda.mp3";
+                audio.play();
+            } else if (peso >= 50 && peso <= 80) {
+                imagen.src = "NORMAL.jpg";
+            } else {
+                imagen.src = "DELGADA.jpg";
+            }
+
+            // Manejar errores de carga de imagen
+            imagen.onerror = function() {
+                status.textContent = `Imagen no encontrada`;
+                imagen.style.display = "none";
+            };
+        }
+    </script>
+</body>
+</html>
